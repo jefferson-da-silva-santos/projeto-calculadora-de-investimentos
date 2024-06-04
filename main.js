@@ -1,24 +1,37 @@
-import './style.css'
-import javascriptLogo from './javascript.svg'
-import viteLogo from '/vite.svg'
-import { setupCounter } from './counter.js'
+import { generateReturnsArray } from "./src/investmentGoals";
 
-document.querySelector('#app').innerHTML = `
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="${viteLogo}" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
-      <img src="${javascriptLogo}" class="logo vanilla" alt="JavaScript logo" />
-    </a>
-    <h1>Hello Vite!</h1>
-    <div class="card">
-      <button id="counter" type="button"></button>
-    </div>
-    <p class="read-the-docs">
-      Click on the Vite logo to learn more
-    </p>
-  </div>
-`
+const buttonCalculate = document.getElementById('calculate-results');
+const form = document.getElementById('investment-form');
 
-setupCounter(document.querySelector('#counter'))
+function renderProgression(event) {
+  event.preventDefault(); //parando o envio do form
+  const startingAmount = Number(form['starting-amount'].value); //name do input do form
+  const additionalContribution = Number(form['additional-contribution'].value);//name do input do form
+  const timeAmount = Number(form['time-amount'].value);//name do input do form
+  const timeAmountPeriod = form['time-amount-period'].value;//name do input do form
+  const returnRatePeriod = form['evaluation-period'].value;//name do input do form
+  const returnRate = Number(form['return-rate'].value);//name do input do form
+  const taxRate = Number(form['tax-rate'].value);//name do input do form
+
+  // const startingAmount = Number(document.getElementById('starting-amount').value);
+  // const additionalContribution = Number(document.getElementById('additional-contribution').value);
+  // const timeAmount = Number(document.getElementById('time-amount').value);
+  // const timeAmountPeriod = document.getElementById('time-amount-period').value;
+  // const returnRatePeriod = document.getElementById('evaluation-period').value;
+  // const returnRatePeriod = document.getElementById('evaluation-period').value;
+  // const returnRate = Number(document.getElementById('return-rate').value);
+  // const taxRate = Number(document.getElementById('tax-rate').value);
+
+  const returnsArray = generateReturnsArray(
+    startingAmount, 
+    timeAmount, 
+    timeAmountPeriod, 
+    additionalContribution, 
+    returnRate, 
+    returnRatePeriod
+  );
+
+  console.log(returnsArray);
+}
+
+buttonCalculate.addEventListener('click', renderProgression);
