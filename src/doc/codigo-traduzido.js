@@ -18,7 +18,7 @@ function gerarArrayDeRetornos(
 
   const taxaDeRetornoFinal = periodoDeTempoParaTaxaRetorno === 'mensal'
     ? 1 + taxaDeRetorno / 100
-    : converterParaTaxaDeRetornoMensal(! + taxaDeRetorno / 100);
+    : converterParaTaxaDeRetornoMensal(1 + taxaDeRetorno / 100);
 
   const horizonteTemporalFinal = mensalOuAnual === 'mensal'
     ? periodoDeTempoParaInvestimento : periodoDeTempoParaInvestimento * 12;

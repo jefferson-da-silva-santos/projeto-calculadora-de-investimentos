@@ -4,12 +4,12 @@ function convertToMontlyReturnRate(yearlyReturnRate) {
 
 export function generateReturnsArray(
   //Passando valores padrão para o caso usuário não passa-los
-  startingAmount = 0, 
-  timeHorizon = 0, 
-  timePeriod = 'monthly', 
-  monthlyContribution = 0, 
+  startingAmount = 0,
+  timeHorizon = 0,
+  timePeriod = 'monthly',
+  monthlyContribution = 0,
   returnRate = 0,
-  returnTimeFrame = 'monthly' 
+  returnTimeFrame = 'monthly'
 ) {
 
   if (!timeHorizon || !startingAmount) {
@@ -34,12 +34,20 @@ export function generateReturnsArray(
   const returnsArray = [referenceInvestmentObject, {}];
 
   for (let timeReference = 1; timeReference <= finalTimeHorizon; timeReference++) {
+
     const previousTotalAmount = returnsArray[timeReference - 1].totalAmount;
+    
     if (!isNaN(previousTotalAmount)) {
-      const totalAmount = previousTotalAmount * finalReturnRate + monthlyContribution;
-      const interestReturns = totalAmount - previousTotalAmount - monthlyContribution;
-      const investedAmount = startingAmount + monthlyContribution * timeReference;
+
+      const totalAmount = returnsArray[timeReference - 1].totalAmount * finalReturnRate + monthlyContribution;
+      const interestReturns = returnsArray[timeReference - 1].totalAmount * (finalReturnRate - 1);
+      const investedAmount = startingAmount + monthlyContribution + timeReference;
       const totalInterestReturns = totalAmount - investedAmount;
+
+      // const totalAmount = previousTotalAmount * finalReturnRate + monthlyContribution;
+      // const interestReturns = totalAmount - previousTotalAmount - monthlyContribution;
+      // const investedAmount = startingAmount + monthlyContribution * timeReference;
+      // const totalInterestReturns = totalAmount - investedAmount;
 
       returnsArray.push({
         investedAmount,
