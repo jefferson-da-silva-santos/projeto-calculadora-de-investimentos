@@ -1,13 +1,176 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="pt-br">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
+    <link rel="stylesheet" href="./style.css" />
+    <title>Calculadora de Investimentos</title>
   </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/main.js"></script>
+
+  <body class="grid grid-cols-3 grid-rows-1 min-h-dvh">
+    <aside
+      class="bg-emerald-500 row-span-2 flex flex-col justify-start py-5 px-2"
+    >
+      <div class="sticky top-0">
+        <h1 class="text-2xl font-bold px-6 py-2 text-center">
+          Calculadora de Investimentos
+        </h1>
+        <form class="w-full" id="investment-form">
+          <div class="flex w-full flex-col px-6 my-2 h-[4.25rem]">
+            <label for="starting-amount" class="font-bold text-gray-700"
+              >Investimento inicial</label
+            >
+            <div class="flex">
+              <input
+                class="w-1/6 text-center rounded-l-lg"
+                value="R$"
+                type="text"
+                disabled
+              />
+              <input
+                class="w-5/6 rounded-r-lg px-2"
+                type="text"
+                id="starting-amount"
+                name="starting-amount"
+                placeholder="0.00"
+                required
+              />
+            </div>
+          </div>
+          <div class="flex w-full flex-col px-6 my-2 h-[4.25rem]">
+            <label for="additional-contribution" class="font-bold text-gray-700"
+              >Aportes adicionais</label
+            >
+            <div class="flex">
+              <input
+                class="w-1/6 text-center rounded-l-lg"
+                value="R$"
+                type="text"
+                disabled
+              />
+              <input
+                class="px-2 w-5/6 rounded-r-lg"
+                type="text"
+                id="additional-contribution"
+                name="additional-contribution"
+                placeholder="0.00"
+              />
+            </div>
+          </div>
+          <div class="flex w-full flex-col px-6 my-2 h-[4.25rem]">
+            <label for="time-amount" class="font-bold text-gray-700"
+              >Prazo</label
+            >
+            <div class="flex">
+              <input
+                class="w-2/3 px-2 rounded-l-lg"
+                type="text"
+                id="time-amount"
+                name="time-amount"
+                placeholder="0"
+                required
+              />
+              <select
+                id="time-amount-period"
+                name="time-amount-period"
+                class="w-1/3 rounded-r-lg text-center border-l-2 hover:bg-emerald-950 hover:text-slate-200"
+              >
+                <option value="monthly">Mensal</option>
+                <option value="yearly">Anual</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex w-full flex-col px-6 my-2 h-[4.25rem]">
+            <label for="return-rate" class="font-bold text-gray-700"
+              >Rentabilidade</label
+            >
+            <div class="flex">
+              <input
+                class="w-1/6 text-center rounded-l-lg"
+                value="%"
+                type="text"
+                disabled
+              />
+              <input
+                class="w-1/2 px-2"
+                type="text"
+                id="return-rate"
+                name="return-rate"
+                placeholder="0"
+                required
+              />
+              <select
+                id="evaluation-period"
+                name="evaluation-period"
+                class="w-1/3 rounded-r-lg text-center border-l-2 hover:bg-emerald-950 hover:text-slate-200"
+              >
+                <option value="monthly">Mensal</option>
+                <option value="yearly">Anual</option>
+              </select>
+            </div>
+          </div>
+          <div class="flex w-full flex-col px-6 my-2 h-[4.25rem]">
+            <label for="tax-rate" class="font-bold text-gray-700"
+              >Impostos sobre lucro</label
+            >
+            <div class="flex">
+              <input
+                class="w-1/6 text-center rounded-l-lg"
+                value="%"
+                type="text"
+                disabled
+              />
+              <input
+                class="w-5/6 rounded-r-lg px-2"
+                type="text"
+                id="tax-rate"
+                name="tax-rate"
+                placeholder="0"
+                required
+              />
+            </div>
+          </div>
+        </form>
+        <div class="flex h-12 px-6 my-8 w-full gap-2">
+          <button
+            id="calculate-results"
+            class="w-1/2 rounded-lg bg-emerald-950 text-slate-200 hover:bg-emerald-800"
+            form="investment-form"
+            type="submit"
+          >
+            Calcular
+          </button>
+          <button id="clear-form" class="hover:bg-emerald-700 w-1/2 rounded-lg">
+            Limpar
+          </button>
+        </div>
+      </div>
+    </aside>
+    <main class="row-span-2 col-span-2 relative">
+      <button id="slide-arrow-previous" class="absolute top-0 bottom-0 left-0 text-5xl cursor-pointer bg-slate-200 opacity-50 w-8 hover:opacity-100 focus:opacity-100"> &#8249; </button>
+
+      <button id="slide-arrow-next" class="absolute top-0 bottom-0 right-0 text-5xl cursor-pointer bg-slate-200 opacity-50 w-8 hover:opacity-100 focus:opacity-100"> &#8250; </button>
+      <div id="carousel" class="h-full w-full flex overflow-x-auto scroll-smooth">
+        <section id="charts-container" class="h-full basis-full shrink-0">
+          <div class="h-[36%] flex flex-col items-center pb-10">
+            <p class="font-bold text-lg">Resultado Final</p>
+            <canvas id="final-money-distribution"></canvas>
+          </div>
+          <div class="h-[55%] flex flex-col items-center">
+            <p class="font-bold text-lg">Progressão</p>
+            <canvas id="progression"></canvas>
+          </div>
+        </section>
+        <section id="table-container" class="overflow-y-auto h-full basis-full shrink-0">
+          <p class="font-bold text-lg text-center">Resultados Mensais</p>
+          <table
+            id="results-table"
+            class="w-full max-h-full border border-separate"
+          ></table>
+        </section>
+      </div>
+    </main>
+    <script type="module" src="./main.js"></script>
   </body>
 </html>
