@@ -1,9 +1,12 @@
+// Função que converte uma taxa de retorno anual em uma taxa de retorno mensal
 function convertToMontlyReturnRate(yearlyReturnRate) {
   return yearlyReturnRate ** (1 / 12);
+  //// Usando operador de exponenciação para calcular a taxa mensal
 }
 
+// Função que gera um array de retornos ao longo do tempo
 export function generateReturnsArray(
-  //Passando valores padrão para o caso usuário não passa-los
+  // Valores padrão caso não sejam fornecidos pelo usuário
   startingAmount = 0,
   timeHorizon = 0,
   timePeriod = 'monthly',
@@ -12,17 +15,21 @@ export function generateReturnsArray(
   returnTimeFrame = 'monthly'
 ) {
 
+  // Verifica se o investimento inicial e o prazo foram fornecidos
   if (!timeHorizon || !startingAmount) {
     throw new Error('Investimento inicial e prazo de devem ser preenchidos com valores positivos.')
   }
 
+  // Calcula a taxa de retorno final com base no período de tempo fornecido
   const finalReturnRate = returnTimeFrame === 'monthly'
     ? 1 + returnRate / 100
     : convertToMontlyReturnRate(1 + returnRate / 100);
 
+  // Converte o prazo para meses se necessário
   const finalTimeHorizon = timePeriod === 'monthly'
     ? timeHorizon : timeHorizon * 12;
 
+  // Objeto de investimento de referência
   const referenceInvestmentObject = {
     investedAmount: startingAmount,
     interestReturns: 0,
@@ -31,24 +38,25 @@ export function generateReturnsArray(
     totalAmount: startingAmount
   }
 
+  // Array que armazenará os retornos ao longo do tempo, começando com o investimento inicial
   const returnsArray = [referenceInvestmentObject];
 
+  // Loop para calcular os retornos mensais
   for (let timeReference = 1; timeReference <= finalTimeHorizon; timeReference++) {
 
+    // Obtém o totalAmount do mês anterior
     const previousTotalAmount = returnsArray[timeReference - 1].totalAmount;
     
+    // Verifica se o totalAmount é um número válido (não é NaN)
     if (!isNaN(previousTotalAmount)) {
 
-      const totalAmount = returnsArray[timeReference - 1].totalAmount * finalReturnRate + monthlyContribution;
-      const interestReturns = returnsArray[timeReference - 1].totalAmount * (finalReturnRate - 1);
-      const investedAmount = startingAmount + monthlyContribution + timeReference;
+      // Calcula os valores do mês atual com base nos valores do mês anterior e nas entradas do usuário
+      const totalAmount = previousTotalAmount * finalReturnRate + monthlyContribution;
+      const interestReturns = previousTotalAmount * (finalReturnRate - 1);
+      const investedAmount = startingAmount + monthlyContribution * timeReference;
       const totalInterestReturns = totalAmount - investedAmount;
 
-      // const totalAmount = previousTotalAmount * finalReturnRate + monthlyContribution;
-      // const interestReturns = totalAmount - previousTotalAmount - monthlyContribution;
-      // const investedAmount = startingAmount + monthlyContribution * timeReference;
-      // const totalInterestReturns = totalAmount - investedAmount;
-
+      // Adiciona os valores calculados ao array de retornos
       returnsArray.push({
         investedAmount,
         interestReturns,
@@ -62,5 +70,6 @@ export function generateReturnsArray(
     }
   }
 
+  // Retorna o array completo de retornos ao longo do tempo
   return returnsArray;
 }
